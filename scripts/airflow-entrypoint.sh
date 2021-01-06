@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
-
-airflow upgradedb
-
+airflow initdb
 airflow webserver
