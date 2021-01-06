@@ -51,3 +51,13 @@ services:
       interval: 30s
       timeout: 30s
       retries: 2
+
+  nginx:
+    image: nginx:latest
+    container_name: airflow_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - webserver
