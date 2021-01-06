@@ -1,2 +1,3 @@
 airflow-logs/
 dags/
+__pycache__/
