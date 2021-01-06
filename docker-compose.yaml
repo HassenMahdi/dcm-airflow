@@ -10,7 +10,7 @@ services:
       - "5433:5432"
 
   scheduler:
-    image: apache/airflow:latest
+    image: apache/airflow:1.10.14
     restart: always
     depends_on:
       - postgres
@@ -18,7 +18,7 @@ services:
     env_file:
       - .env
     ports:
-      - "8793:8793"
+      - "8793"
     volumes:
       - ./dags:/opt/airflow/dags
       - ./airflow-logs:/opt/airflow/logs
@@ -31,7 +31,7 @@ services:
       retries: 3
 
   webserver:
-    image: apache/airflow:latest
+    image: apache/airflow:1.10.14
     hostname: webserver
     restart: always
     depends_on:
@@ -44,7 +44,7 @@ services:
       - ./airflow-logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
     ports:
-      - "8080:8080"
+      - "8080"
     entrypoint: ./scripts/airflow-entrypoint.sh
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
@@ -56,7 +56,7 @@ services:
     image: nginx:latest
     container_name: airflow_nginx
     ports:
-      - "80:80"
+      - "5005:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
     depends_on:
