@@ -61,3 +61,5 @@ services:
       - ./nginx:/etc/nginx/conf.d
     depends_on:
       - webserver
+      - scheduler
+      - postgres
