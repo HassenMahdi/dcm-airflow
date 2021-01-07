@@ -63,3 +63,14 @@ services:
       - webserver
       - scheduler
       - postgres
+
+  api:
+    build: ./backend 
+    ports:
+      - "5006:5000"
+    volumes:
+      - ./airflow-logs:/airflow-logs
+    depends_on:
+      - postgres
+    env_file:
+      - .env

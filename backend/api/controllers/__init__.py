@@ -11,4 +11,4 @@ api = Api(blueprint,
           description=''
           )
 
-api.add_namespace(monitor, path='/')
+api.add_namespace(monitor, path='/monitor')
