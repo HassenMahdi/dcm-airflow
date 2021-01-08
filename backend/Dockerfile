@@ -1,11 +1,11 @@
-FROM ubuntu:16.04
-MAINTAINER Caner Dagli
-RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential git
+FROM python:3.7.3-slim
+RUN pip install --upgrade pip
+COPY requirements.txt /
+RUN pip3 install -r /requirements.txt
 COPY . /app
 WORKDIR /app
-RUN pip install -r requirements.txt
-ENTRYPOINT ["python", "run.py"]
+EXPOSE 5000
+ENTRYPOINT [ "gunicorn", "-w", "4", "app:app", "-b", ":5000"]
 
 # docker build -t flask-api-starter .
 # 
