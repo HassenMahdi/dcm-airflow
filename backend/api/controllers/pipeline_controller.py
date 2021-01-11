@@ -48,3 +48,18 @@ class Pipelines(Resource):
 
         except Exception:
             traceback.print_exc()
+
+
+@dataflow_namespace.route("/<pipe_id>/list-nodes")
+class Nodes(Resource):
+
+    @dataflow_namespace.doc("Lists all nodes and links in a pipeline")
+    def get(self, pipe_id):
+        try:
+            dataflow_document = DataFlowDocument()
+            pipeline = dataflow_document.get_pipeline(pipe_id)
+
+            return jsonify(pipeline)
+
+        except Exception:
+            traceback.print_exc()

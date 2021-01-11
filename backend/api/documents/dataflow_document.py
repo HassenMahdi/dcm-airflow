@@ -7,10 +7,13 @@ from api.db.airflow import mongo
 
 class DataFlowDocument:
 
-    def list_pipelines(self):
-        """Fetches all pipelines' metadata"""
+    def list_pipelines(self, pipe_id=None):
+        """Fetches all pipelines' metadata, if pipe_id, fetches a pipeline nodes and links"""
 
         dataflow = mongo.db.airflow_pipelines
+        if pipe_id:
+            pipe = self.get_pipeline(pipe_id)
+            return {{"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"]}}
 
         pipes = dataflow.find()
         return [{"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"]} for pipe in pipes]
