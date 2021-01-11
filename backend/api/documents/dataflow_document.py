@@ -41,3 +41,10 @@ class DataFlowDocument:
         else:
             template["created_at"] = datetime.now()
             dataflow.insert_one(template)
+
+    def delete_pipeline(self, pipe_id):
+        """Deletes a pipeline document based on pipe_id"""
+
+        dataflow = mongo.db.airflow_pipelines
+
+        dataflow.delete_one({"pipeline_id": pipe_id})

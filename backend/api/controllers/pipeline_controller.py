@@ -14,8 +14,8 @@ dataflow_namespace = Namespace("dataflow")
 
 @dataflow_namespace.route("/list-pipelines", methods=["GET"])
 @dataflow_namespace.route("/save", methods=["POST"])
-@dataflow_namespace.route("<pipe_id>/", methods=["PUT"])
-class ListingPipelines(Resource):
+@dataflow_namespace.route("/delete/<pipe_id>/", methods=["DELETE"])
+class Pipelines(Resource):
 
     @dataflow_namespace.doc("Returns all pipelines' metadata")
     def get(self):
@@ -34,6 +34,17 @@ class ListingPipelines(Resource):
             pipe_id = save_pipeline(template)
 
             return jsonify(pipe_id)
+
+        except Exception:
+            traceback.print_exc()
+
+    @dataflow_namespace.doc("Deletes a pipeline")
+    def delete(self, pipe_id):
+        try:
+            dataflow_document = DataFlowDocument()
+            pipes = dataflow_document.delete_pipeline(pipe_id)
+
+            return jsonify(True)
 
         except Exception:
             traceback.print_exc()
