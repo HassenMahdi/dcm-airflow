@@ -19,7 +19,6 @@ nose2==0.6.5
 pymongo==3.11.2
 pyrsistent==0.17.3
 pytz==2020.5
-pytz==2020.5
 PyYAML==5.3.1
 six==1.11.0
 SQLAlchemy==1.1.2
