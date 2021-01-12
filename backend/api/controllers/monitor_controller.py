@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from flask import request, jsonify
-from flask_restplus import Resource, fields, Namespace
+from flask_restx import Resource, fields, Namespace
 
 from api.services.runs_service import get_runs, get_run_details
 from api.services.tasks_service import get_task_log

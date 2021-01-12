@@ -10,7 +10,7 @@ class DataFlowDocument:
     def list_pipelines(self, pipe_id=None):
         """Fetches all pipelines' metadata, if pipe_id, fetches a pipeline nodes and links"""
 
-        dataflow = mongo.db.airflow_pipelines
+        dataflow = mongo.db.dataflow
         if pipe_id:
             pipe = self.get_pipeline(pipe_id)
             return {{"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"]}}
@@ -28,7 +28,7 @@ class DataFlowDocument:
     def save_pipeline(self, template):
         """Saves or updates a pipeline document"""
 
-        dataflow = mongo.db.airflow_pipelines
+        dataflow = mongo.db.dataflow
 
         exist_pipeline = self.get_pipeline(template["pipeline_id"])
         if exist_pipeline:
@@ -48,6 +48,6 @@ class DataFlowDocument:
     def delete_pipeline(self, pipe_id):
         """Deletes a pipeline document based on pipe_id"""
 
-        dataflow = mongo.db.airflow_pipelines
+        dataflow = mongo.db.dataflow
 
         dataflow.delete_one({"pipeline_id": pipe_id})
