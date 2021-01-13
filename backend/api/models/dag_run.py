@@ -13,5 +13,6 @@ class DagRun(db.Model):
     run_id = db.Column(db.Integer)
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
+    state = db.Column(db.String)
 
     tasks = None
