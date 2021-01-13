@@ -1,7 +1,7 @@
 import json
 
 from flask import current_app
-from pip._vendor import requests
+import requests
 
 from api.services.pipeline_service import get_pipeline
 
