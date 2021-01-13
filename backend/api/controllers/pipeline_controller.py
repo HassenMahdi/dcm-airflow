@@ -10,7 +10,6 @@ from api.services.pipeline_service import save_pipeline, publish_pipeline
 
 dataflow_namespace = Namespace("dataflow")
 
-
 @dataflow_namespace.route("/list-pipelines", methods=["GET"])
 @dataflow_namespace.route("/save", methods=["POST"])
 @dataflow_namespace.route("/delete/<pipe_id>/", methods=["DELETE"])

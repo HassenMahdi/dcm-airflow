@@ -1,5 +1,5 @@
 from airflow.plugins_manager import AirflowPlugin
-from dcm_plugin.dcm_services import dcm_hook_factory
+from dcm_plugin.factory import dcm_hook_factory
 
 
 class DcmAi(AirflowPlugin):
