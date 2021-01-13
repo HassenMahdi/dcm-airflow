@@ -7,15 +7,15 @@ def dcm_hook_factory(**context):
     task_type = context['task_type']
     
     handler = None
-    if task_type == 'AZURE_STORAGE_ACCOUNT':
-        handler = ImportAzureBlob
+    if task_type in ImportConnectorHandler.import_connector_types:
+        handler = ImportConnectorHandler
     elif task_type in TransformationHandler.transformation_types:
         handler = TransformationHandler
     elif task_type == 'concat':
         handler = ConcatHandler
     elif task_type == 'join':
         handler = JoinHandler
-    elif task_type in BaseUploadHandler.uploader_types:
+    elif task_type in UploadConnectorHandler.upload_connector_types:
         handler = BaseUploadHandler
     else:
         raise f'NO HANDLER FOUND FOR {task_type} TYPE'
@@ -89,22 +89,37 @@ class DcmService:
 
 
 # DATASOURCES
-class ImportAzureBlob(DcmService):
-    base_url = os.getenv("DCM_SERVICE__IMPORT")
+# class ImportAzureBlob(DcmService):
+#     base_url = os.getenv("DCM_SERVICE__IMPORT")
     
+#     def run(self, params):
+#         payload = {
+#             "conn_string": params['conn_string'],
+#             "container": params['container'],
+#             "blob": params['blob'],
+#         }
+#         response = requests.post(url=f"{self.base_url}connectors/azure/import",json=payload)
+#         response_body =  json.loads(response.text)
+#         return  {
+#             "sheet_id":response_body['sheet_id'],
+#             "file_id":response_body['file_id'],
+#             "folder":'import'
+#         }
+
+class BaseImportHandler(DcmService):
+    base_url = os.getenv("DCM_SERVICE__IMPORT")
+
+class ImportConnectorHandler(BaseImportHandler):
+    import_connector_types = ["BLOB_STORAGE_IMPORT_CONNECTOR", "SQL_IMPORT_CONNECTOR"]
     def run(self, params):
-        payload = {
-            "conn_string": params['conn_string'],
-            "container": params['container'],
-            "blob": params['blob'],
-        }
-        response = requests.post(url=f"{self.base_url}connectors/azure/import",json=payload)
+        response = requests.post(url=f"{self.base_url}connectors/import",json=params)
         response_body =  json.loads(response.text)
         return  {
             "sheet_id":response_body['sheet_id'],
             "file_id":response_body['file_id'],
             "folder":'import'
         }
+
 
 class BaseTransformationHandler(DcmService):
     base_url = os.getenv("DCM_SERVICE__TRANSFORM")
@@ -171,8 +186,9 @@ class JoinHandler(BaseTransformationHandler):
 
 class BaseUploadHandler(DcmService):
     base_url = os.getenv("DCM_SERVICE__UPLOAD")
-    uploader_types = ['UPLOAD_AZURE_STORAGE_ACCOUNT']
 
+class UploadConnectorHandler(BaseUploadHandler):
+    upload_connector_types = ["BLOB_STORAGE_UPLOAD_CONNECTOR", "SQL_UPLOAD_CONNECTOR"]
     def run(self, params):
         # FORM PAYLOAD
         file_id = self.input['file_id']
@@ -182,10 +198,12 @@ class BaseUploadHandler(DcmService):
             "file_id": file_id,
             "sheet_id": sheet_id
         }
-        run_uplaod = requests.post(url=f"{self.base_url}", json=payload)
+        run_uplaod = requests.post(url=f"{self.base_url}connector", json=payload)
         if run_uplaod.status_code == 200:
             return {'status':'success'}
         else:
             raise Exception('Upload has Failed')
+
+        
         
         # return self.construct_output(transformed_file_id, transformation_id)

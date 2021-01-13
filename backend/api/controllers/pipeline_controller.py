@@ -6,8 +6,7 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource
 
 from api.documents.dataflow_document import DataFlowDocument
-from api.services.pipeline_service import save_pipeline
-
+from api.services.pipeline_service import save_pipeline, publish_pipeline
 
 dataflow_namespace = Namespace("dataflow")
 
@@ -63,3 +62,11 @@ class Nodes(Resource):
 
         except Exception:
             traceback.print_exc()
+
+
+@dataflow_namespace.route("/<pipe_id>/publish")
+class PublishNodes(Resource):
+
+    @dataflow_namespace.doc("Publish Pipeline")
+    def post(self, pipe_id):
+        return publish_pipeline(pipe_id)
