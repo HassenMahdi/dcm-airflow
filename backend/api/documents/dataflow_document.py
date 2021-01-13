@@ -14,7 +14,7 @@ class DataFlowDocument:
         dataflow = mongo.db[self.__TABLE__]
         if pipe_id:
             pipe = self.get_pipeline(pipe_id)
-            return {{"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"]}}
+            return {"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"]}
 
         pipes = dataflow.find()
         return [{"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"]} for pipe in pipes]

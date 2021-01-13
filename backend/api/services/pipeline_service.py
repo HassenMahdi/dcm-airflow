@@ -10,7 +10,7 @@ dataflow_document = DataFlowDocument()
 
 def save_pipeline(template):
 
-    if not template.get("pipe_id"):
+    if not template.get("pipeline_id"):
         template["pipeline_id"] = generate_id()
 
     dataflow_document.save_pipeline(template)
