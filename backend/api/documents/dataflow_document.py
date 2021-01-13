@@ -26,7 +26,7 @@ class DataFlowDocument:
 
         dataflow = mongo.db[self.__TABLE__]
 
-        return dataflow.find_one({"pipeline_id": pipe_id})
+        return dataflow.find_one({"pipeline_id": pipe_id}, {"_id": 0})
 
     def save_pipeline(self, template):
         """Saves or updates a pipeline document"""
