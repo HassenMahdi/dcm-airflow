@@ -147,7 +147,7 @@ class Dags(BaseView):
         execution_date = timezone.utcnow()
         run_id = generate_id()
 
-        trigger_dag(
+        dag_run = trigger_dag(
             dag_id=trigger_dag_id,
             run_id=run_id,
             conf=conf,
@@ -157,7 +157,7 @@ class Dags(BaseView):
 
         return {
             'run_id': run_id,
-            'execution_date': execution_date
+            'execution_date': str(execution_date)
         }
         
 

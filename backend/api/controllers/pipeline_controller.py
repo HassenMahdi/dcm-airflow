@@ -6,7 +6,8 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource
 
 from api.documents.dataflow_document import DataFlowDocument
-from api.services.pipeline_service import save_pipeline, publish_pipeline, run_pipeline
+from api.services.airflow_service import publish_to_airflow, run_dag_in_airflow
+from api.services.pipeline_service import save_pipeline
 
 dataflow_namespace = Namespace("dataflow")
 
@@ -68,7 +69,7 @@ class PublishNodes(Resource):
 
     @dataflow_namespace.doc("Publish Pipeline")
     def post(self, pipe_id):
-        return publish_pipeline(pipe_id)
+        return publish_to_airflow(pipe_id)
 
 
 @dataflow_namespace.route("/<pipe_id>/run")
@@ -76,4 +77,5 @@ class PublishNodes(Resource):
 
     @dataflow_namespace.doc("Publish Pipeline")
     def post(self, pipe_id):
-        return run_pipeline(pipe_id)
+        run_params = request.json
+        return run_dag_in_airflow(pipe_id, run_params)
