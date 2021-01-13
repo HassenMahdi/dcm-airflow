@@ -14,11 +14,11 @@ class DataFlowDocument:
         dataflow = mongo.db[self.__TABLE__]
         if pipe_id:
             pipe = self.get_pipeline(pipe_id)
-            return {"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"],
+            return {"name": pipe["name"], "id": pipe["pipeline_id"], "created_on": pipe["created_on"],
                     "description": pipe["description"], "modified_on": pipe.get("modified_on")}
 
         pipes = dataflow.find()
-        return [{"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"],
+        return [{"name": pipe["name"], "id": pipe["pipeline_id"], "created_on": pipe["created_on"],
                  "description": pipe["description"], "modified_on": pipe.get("modified_on")} for pipe in pipes]
 
     def get_pipeline(self, pipe_id):
@@ -48,7 +48,7 @@ class DataFlowDocument:
                 )
 
         else:
-            template["created_at"] = datetime.now()
+            template["created_on"] = datetime.now()
             dataflow.insert_one(template)
 
     def delete_pipeline(self, pipe_id):
