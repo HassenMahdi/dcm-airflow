@@ -4,6 +4,7 @@
 import logging
 import sys
 from flask import Flask
+from flask_cors import CORS
 from api.db.airflow import db, mongo
 from config import config
 
@@ -25,4 +26,6 @@ def create_app(env):
     logging.basicConfig(stream=sys.stdout,
                         format='%(asctime)s|%(levelname)s|%(filename)s:%(lineno)s|%(message)s',
                         level=logging.DEBUG)
+
+    CORS(app)
     return app
