@@ -14,10 +14,12 @@ class DataFlowDocument:
         dataflow = mongo.db[self.__TABLE__]
         if pipe_id:
             pipe = self.get_pipeline(pipe_id)
-            return {"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"]}
+            return {"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"],
+                    "description": pipe["description"], "modified_on": pipe.get("modified_on")}
 
         pipes = dataflow.find()
-        return [{"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"]} for pipe in pipes]
+        return [{"name": pipe["name"], "id": pipe["pipeline_id"], "created_at": pipe["created_at"],
+                 "description": pipe["description"], "modified_on": pipe.get("modified_on")} for pipe in pipes]
 
     def get_pipeline(self, pipe_id):
         """Fetches a pipeline document based on pipe_id"""
@@ -37,7 +39,10 @@ class DataFlowDocument:
                     {'pipeline_id': template["pipeline_id"]},
                     {'$set': {
                         "nodes": template["nodes"],
-                        "links": template["links"]
+                        "links": template["links"],
+                        "name": template["name"],
+                        "description": template["description"],
+                        "modified_on": datetime.now()
                     }
                     }, upsert=False
                 )
