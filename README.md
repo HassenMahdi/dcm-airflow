@@ -3,7 +3,7 @@ dcm-airflow
 
 ## Create Repos
 - dags/
-- airflow-logs
+- airflow-logs/
 
 ## run
 docker-compose up
