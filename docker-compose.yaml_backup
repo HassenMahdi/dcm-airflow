@@ -10,7 +10,7 @@ services:
       - "5433:5432"
 
   scheduler:
-    build: ./airflow
+    image: apache/airflow:1.10.14
     restart: always
     depends_on:
       - postgres
@@ -22,6 +22,7 @@ services:
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/airflow-logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
     command: scheduler
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
@@ -30,7 +31,8 @@ services:
       retries: 3
 
   webserver:
-    build: ./airflow
+    image: apache/airflow:1.10.14
+    hostname: webserver
     restart: always
     depends_on:
       - postgres
@@ -39,15 +41,27 @@ services:
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/airflow-logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
     ports:
-      - "8080:8080"
-    entrypoint: 
-      /airflow-entrypoint.sh
+      - "8080"
+    entrypoint: ./airflow-entrypoint.sh
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
       interval: 30s
       timeout: 30s
       retries: 2
+
+  nginx:
+    image: nginx:latest
+    container_name: airflow_nginx
+    ports:
+      - "5005:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - webserver
+      - scheduler
+      - postgres
 
   api:
     build: ./backend 

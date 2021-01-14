@@ -1,6 +1,6 @@
-from dcm_plugin.tasks.dcm.uploads import UploadConnectorHandler
-from dcm_plugin.tasks.dcm.imports import ImportConnectorHandler
-from dcm_plugin.tasks.dcm.transforms import ConcatHandler, JoinHandler, TransformationHandler
+from dcm.tasks.dcm.uploads import UploadConnectorHandler
+from dcm.tasks.dcm.imports import ImportConnectorHandler
+from dcm.tasks.dcm.transforms import ConcatHandler, JoinHandler, TransformationHandler
 
 
 def dcm_hook_factory(**context):

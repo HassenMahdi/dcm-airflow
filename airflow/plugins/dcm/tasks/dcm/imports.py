@@ -2,7 +2,7 @@
 import requests
 import json
 import os
-from dcm_plugin.tasks.dcm import DcmService
+from dcm.tasks.dcm import DcmService
 
 
 class BaseImportHandler(DcmService):
@@ -11,7 +11,7 @@ class BaseImportHandler(DcmService):
 class ImportConnectorHandler(BaseImportHandler):
     import_connector_types = ["BLOB_STORAGE_IMPORT_CONNECTOR", "SQL_IMPORT_CONNECTOR"]
     def run(self, params):
-        response = requests.post(url=f"{self.base_url}connectors/import",json=params)
+        response = requests.post(url=f"{self.base_url}connectors/",json=params)
         response_body =  json.loads(response.text)
         return  {
             "sheet_id":response_body['sheet_id'],

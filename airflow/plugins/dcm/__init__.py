@@ -1,9 +1,9 @@
 from airflow.plugins_manager import AirflowPlugin
-from dcm_plugin.factory import dcm_hook_factory
+from dcm.factory import dcm_hook_factory
 
 
 class DcmAi(AirflowPlugin):
-    name = "dcm_plugin"
+    name = "dcm"
     operators = []
     # Leave in for explicitness
     hooks = []

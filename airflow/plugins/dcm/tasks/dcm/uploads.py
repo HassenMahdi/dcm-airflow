@@ -1,4 +1,4 @@
-from dcm_plugin.tasks.dcm import DcmService
+from dcm.tasks.dcm import DcmService
 import requests
 import os
 import json
