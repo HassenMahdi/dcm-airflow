@@ -1,6 +1,6 @@
 from dcm.tasks.dcm.uploads import UploadConnectorHandler
 from dcm.tasks.dcm.imports import ImportConnectorHandler
-from dcm.tasks.dcm.transforms import ConcatHandler, JoinHandler, TransformationHandler
+from dcm.tasks.dcm.transforms import ConcatHandler, JoinHandler, TransformationHandler, PipelineHandler
 
 
 def dcm_hook_factory(**context):
@@ -16,6 +16,8 @@ def dcm_hook_factory(**context):
         handler = ConcatHandler
     elif task_type == 'join':
         handler = JoinHandler
+    elif task_type == 'PIPELINE_TRANSFORMATION':
+        handler = PipelineHandler
     elif task_type in UploadConnectorHandler.upload_connector_types:
         handler = UploadConnectorHandler
     else:
