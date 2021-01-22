@@ -18,7 +18,7 @@ class DcmService:
     def __init__(self, context) -> None:
         self.context = context
         self.dag_run = self.context["dag_run"]
-        self.config = self.dag_run.conf
+        self.config = self.dag_run.conf or {}
         
         self.execution_date = self.context['execution_date']
 
