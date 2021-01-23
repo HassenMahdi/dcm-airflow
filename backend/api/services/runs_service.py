@@ -3,7 +3,11 @@ from api.services.tasks_service import get_run_tasks
 
 
 def get_runs(dag_id):
-    cursor = DagRun.query.filter_by(dag_id=dag_id).all()
+    selector = DagRun.query
+    if dag_id:
+        selector = selector.filter_by(dag_id=dag_id)
+
+    cursor = selector.all()
     return list(cursor)
 
 
