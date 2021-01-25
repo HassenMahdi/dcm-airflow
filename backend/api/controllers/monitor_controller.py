@@ -12,6 +12,7 @@ dag_instance = api.model('dag_task', {
         "start_date": fields.DateTime,
         "end_date": fields.DateTime,
         "state": fields.String,
+        "output": fields.Raw,
     })
 
 dag_run = api.model('dag_run', {

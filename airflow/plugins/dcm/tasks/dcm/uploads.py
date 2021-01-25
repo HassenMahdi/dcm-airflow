@@ -7,7 +7,7 @@ class BaseUploadHandler(DcmService):
     base_url = os.getenv("DCM_SERVICE__UPLOAD")
 
 class UploadConnectorHandler(BaseUploadHandler):
-    upload_connector_types = ["BLOB_STORAGE_UPLOAD_CONNECTOR", "SQL_UPLOAD_CONNECTOR"]
+    upload_connector_types = ["BLOB_STORAGE_UPLOAD_CONNECTOR", "SQL_UPLOAD_CONNECTOR", "POSTGRES_UPLOAD_CONNECTOR"]
     def run(self, params):
         # FORM PAYLOAD
         file_id = self.input['file_id']
