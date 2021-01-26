@@ -21,7 +21,7 @@ def dcm_hook_factory(**context):
     elif task_type in UploadConnectorHandler.upload_connector_types:
         handler = UploadConnectorHandler
     else:
-        raise f'NO HANDLER FOUND FOR {task_type} TYPE'
+        raise Exception(f'NO HANDLER FOUND FOR {task_type} TYPE')
 
     handler(context).start()
 
