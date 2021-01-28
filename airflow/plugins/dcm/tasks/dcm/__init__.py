@@ -24,10 +24,11 @@ class DcmService:
 
         # TASK PARAMS
         self.parameters = self.context['task_parameters']
+        self.run_as_preview = self.config.get('preview', False)
         # CLEAN UP PARAMS
         self.parameters.pop('__gohashid', None)
         self.parameters.update({
-            "preview": self.config.get('preview', False)
+            "preview": self.run_as_preview
         })
 
         self.task_instance = self.context['task_instance']

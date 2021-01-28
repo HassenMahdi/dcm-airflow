@@ -23,6 +23,7 @@ dag_run = api.model('dag_run', {
         "state": fields.String,
         "start_date": fields.DateTime,
         "end_date": fields.DateTime,
+        "conf": fields.Raw,
         "tasks": fields.List(fields.Nested(dag_instance))
     })
 

@@ -14,5 +14,6 @@ class DagRun(db.Model):
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
     state = db.Column(db.String)
+    conf = db.Column(db.PickleType)
 
     tasks = None
