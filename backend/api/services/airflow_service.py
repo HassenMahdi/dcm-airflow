@@ -3,6 +3,10 @@ import json
 from flask import current_app
 import requests
 
+from api.db.airflow import db
+from api.models.dag_model import DagModel
+from api.models.dag_run import DagRun
+from api.models.task_instance import TaskInstance
 from api.services.pipeline_service import get_pipeline
 
 
@@ -35,3 +39,28 @@ def run_dag_in_airflow(pipeline_id, run_params={}):
         return json.loads(response.text)
     else:
         raise Exception('Failed to Trigger Pipeline')
+
+
+def un_pause_dag(dag_id):
+    DagModel.change_pause_state(dag_id, False)
+
+
+def pause_dag(dag_id):
+    DagModel.change_pause_state(dag_id, True)
+
+
+def pulsate_run(run_id):
+    run = DagRun.get_by_id(run_id)
+    DagRun.change_state(run_id, 'running')
+    un_pause_dag(run.dag_id)
+
+
+def retry_failed_run(run_id, tasks=None, states=["failed","upstream_failed"]):
+    session = db.session
+    run = session.query(DagRun).filter_by(run_id=run_id).first()
+    tasks = session.query(TaskInstance).filter(TaskInstance.state.in_(states)).filter_by(dag_id=run.dag_id, execution_date=run.execution_date).all()
+    for t in tasks:
+        t.state = None
+    run.state='running'
+    # SHOULD UNPAUSE DAG
+    session.commit()

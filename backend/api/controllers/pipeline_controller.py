@@ -6,7 +6,8 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource
 
 from api.documents.dataflow_document import DataFlowDocument
-from api.services.airflow_service import publish_to_airflow, run_dag_in_airflow
+from api.services.airflow_service import publish_to_airflow, run_dag_in_airflow, un_pause_dag, pause_dag, pulsate_run, \
+    retry_failed_run
 from api.services.pipeline_service import save_pipeline
 
 dataflow_namespace = Namespace("dataflow")
@@ -79,3 +80,35 @@ class PublishNodes(Resource):
     def post(self, pipe_id):
         run_params = request.json
         return run_dag_in_airflow(pipe_id, run_params)
+
+
+@dataflow_namespace.route("/<pipe_id>/unpause")
+class UnPauseDag(Resource):
+    @dataflow_namespace.doc("Publish Pipeline")
+    def post(self, pipe_id):
+        run_params = request.json
+        return un_pause_dag(pipe_id)
+
+
+@dataflow_namespace.route("/<pipe_id>/pause")
+class PauseDag(Resource):
+    @dataflow_namespace.doc("Publish Pipeline")
+    def post(self, pipe_id):
+        run_params = request.json
+        return pause_dag(pipe_id)
+
+
+@dataflow_namespace.route("/run/<run_id>/pulsate")
+class PauseDag(Resource):
+    @dataflow_namespace.doc("Pulsate Run")
+    def post(self, run_id):
+        run_params = request.json
+        return pulsate_run(run_id)
+
+
+@dataflow_namespace.route("/run/<run_id>/retry")
+class RetryDag(Resource):
+    @dataflow_namespace.doc("Retry Failed Tasks For Run")
+    def post(self, run_id):
+        run_params = request.json
+        return retry_failed_run(run_id, run_params.get('tasks', None))
