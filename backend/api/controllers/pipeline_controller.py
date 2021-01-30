@@ -6,18 +6,17 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource
 
 from api.documents.dataflow_document import DataFlowDocument
-from api.services.airflow_service import publish_to_airflow, run_dag_in_airflow, un_pause_dag, pause_dag, pulsate_run, \
-    retry_failed_run
+from api.services.airflow_service import publish_to_airflow
 from api.services.pipeline_service import save_pipeline
 
-dataflow_namespace = Namespace("dataflow")
+api = Namespace("dataflow")
 
-@dataflow_namespace.route("/list-pipelines", methods=["GET"])
-@dataflow_namespace.route("/save", methods=["POST"])
-@dataflow_namespace.route("/delete/<pipe_id>/", methods=["DELETE"])
+@api.route("/list-pipelines", methods=["GET"])
+@api.route("/save", methods=["POST"])
+@api.route("/delete/<pipe_id>/", methods=["DELETE"])
 class Pipelines(Resource):
 
-    @dataflow_namespace.doc("Returns all pipelines' metadata")
+    @api.doc("Returns all pipelines' metadata")
     def get(self):
         try:
             dataflow_document = DataFlowDocument()
@@ -27,7 +26,7 @@ class Pipelines(Resource):
         except Exception:
             traceback.print_exc()
 
-    @dataflow_namespace.doc("Saves or update a pipeline")
+    @api.doc("Saves or update a pipeline")
     def post(self):
         try:
             template = request.json
@@ -38,7 +37,7 @@ class Pipelines(Resource):
         except Exception:
             traceback.print_exc()
 
-    @dataflow_namespace.doc("Deletes a pipeline")
+    @api.doc("Deletes a pipeline")
     def delete(self, pipe_id):
         try:
             dataflow_document = DataFlowDocument()
@@ -50,10 +49,10 @@ class Pipelines(Resource):
             traceback.print_exc()
 
 
-@dataflow_namespace.route("/<pipe_id>/list-nodes")
+@api.route("/<pipe_id>/list-nodes")
 class Nodes(Resource):
 
-    @dataflow_namespace.doc("Lists all nodes and links in a pipeline")
+    @api.doc("Lists all nodes and links in a pipeline")
     def get(self, pipe_id):
         try:
             dataflow_document = DataFlowDocument()
@@ -65,50 +64,9 @@ class Nodes(Resource):
             traceback.print_exc()
 
 
-@dataflow_namespace.route("/<pipe_id>/publish")
+@api.route("/<pipe_id>/publish")
 class PublishNodes(Resource):
 
-    @dataflow_namespace.doc("Publish Pipeline")
+    @api.doc("Publish Pipeline")
     def post(self, pipe_id):
         return publish_to_airflow(pipe_id)
-
-
-@dataflow_namespace.route("/<pipe_id>/run")
-class PublishNodes(Resource):
-
-    @dataflow_namespace.doc("Publish Pipeline")
-    def post(self, pipe_id):
-        run_params = request.json
-        return run_dag_in_airflow(pipe_id, run_params)
-
-
-@dataflow_namespace.route("/<pipe_id>/unpause")
-class UnPauseDag(Resource):
-    @dataflow_namespace.doc("Publish Pipeline")
-    def post(self, pipe_id):
-        run_params = request.json
-        return un_pause_dag(pipe_id)
-
-
-@dataflow_namespace.route("/<pipe_id>/pause")
-class PauseDag(Resource):
-    @dataflow_namespace.doc("Publish Pipeline")
-    def post(self, pipe_id):
-        run_params = request.json
-        return pause_dag(pipe_id)
-
-
-@dataflow_namespace.route("/run/<run_id>/pulsate")
-class PauseDag(Resource):
-    @dataflow_namespace.doc("Pulsate Run")
-    def post(self, run_id):
-        run_params = request.json
-        return pulsate_run(run_id)
-
-
-@dataflow_namespace.route("/run/<run_id>/retry")
-class RetryDag(Resource):
-    @dataflow_namespace.doc("Retry Failed Tasks For Run")
-    def post(self, run_id):
-        run_params = request.json
-        return retry_failed_run(run_id, run_params.get('tasks', None))
