@@ -18,13 +18,9 @@ class Pipelines(Resource):
 
     @dataflow_namespace.doc("Returns all pipelines' metadata")
     def get(self):
-        try:
-            dataflow_document = DataFlowDocument()
-            pipes = dataflow_document.list_pipelines()
-            return jsonify(pipes)
-
-        except Exception:
-            traceback.print_exc()
+        dataflow_document = DataFlowDocument()
+        pipes = dataflow_document.list_pipelines()
+        return jsonify(pipes)
 
     @dataflow_namespace.doc("Saves or update a pipeline")
     def post(self):
