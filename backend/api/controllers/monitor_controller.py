@@ -12,6 +12,7 @@ dag_instance = api.model('dag_task', {
         "start_date": fields.DateTime,
         "end_date": fields.DateTime,
         "state": fields.String,
+        "output": fields.Raw,
     })
 
 dag_run = api.model('dag_run', {
@@ -22,19 +23,27 @@ dag_run = api.model('dag_run', {
         "state": fields.String,
         "start_date": fields.DateTime,
         "end_date": fields.DateTime,
+        "conf": fields.Raw,
+        "paused": fields.Boolean,
         "tasks": fields.List(fields.Nested(dag_instance))
     })
 
 @api.route('/dag/<dag_id>/run')
-class MonitorRuns(Resource):
+class MonitorDagRuns(Resource):
 
     @api.marshal_list_with(dag_run)
     def get(self, dag_id):
         return get_runs(dag_id)
 
+@api.route('/run')
+class MonitorRun(Resource):
+    @api.marshal_list_with(dag_run)
+    def get(self):
+        return get_run_details()
+
 
 @api.route('/run/<run_id>')
-class MonitorRun(Resource):
+class MonitorRunDetails(Resource):
 
     @api.marshal_with(dag_run)
     def get(self, run_id):

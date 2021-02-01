@@ -13,6 +13,7 @@ from flask import request
 
 from airflow.api.common.experimental.trigger_dag import trigger_dag
 from airflow.utils import timezone
+from dcm.utils.dag import unpause_dag, pause_dag, stop_all_dags_runs
 
 import json 
 
@@ -105,6 +106,7 @@ class Dags(BaseView):
                 op_kwargs = "{" + (
                     f"'task_parameters':{json.dumps(task)},"
                     f"'task_type':'{task_type}',"
+                    f"'task_label':'{task_label}',"
                     f"'dag_metadata':"+"{"+f"'tasks':{json.dumps(tasks_meta)}, 'dependincies': {json.dumps(dependincies)} "+"}"+f","
                 ) + "}"
 
@@ -143,11 +145,20 @@ class Dags(BaseView):
     def trigger_post(self):
         payload = request.json
         trigger_dag_id = payload['dag_id']
-        conf = payload['conf']
+        conf = payload['conf'] or {}
+        preview = conf.get('preview', False)
         execution_date = timezone.utcnow()
-        run_id = generate_id()
 
-        dag_run = trigger_dag(
+
+        stop_all_dags_runs(trigger_dag_id)
+        if preview:
+            pause_dag(trigger_dag_id)
+            run_id = "preview_" + generate_id()
+        else:
+            unpause_dag(trigger_dag_id)
+            run_id = "manual_" + generate_id()
+
+        trigger_dag(
             dag_id=trigger_dag_id,
             run_id=run_id,
             conf=conf,

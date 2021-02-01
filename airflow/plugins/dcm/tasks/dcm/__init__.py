@@ -17,8 +17,20 @@ class DcmService:
 
     def __init__(self, context) -> None:
         self.context = context
+        self.dag_run = self.context["dag_run"]
+        self.config = self.dag_run.conf or {}
+        
         self.execution_date = self.context['execution_date']
+
+        # TASK PARAMS
         self.parameters = self.context['task_parameters']
+        self.run_as_preview = self.config.get('preview', False)
+        # CLEAN UP PARAMS
+        self.parameters.pop('__gohashid', None)
+        self.parameters.update({
+            "preview": self.run_as_preview
+        })
+
         self.task_instance = self.context['task_instance']
         self.task_id = self.context['task_instance'].task_id
         self.key = self.parameters['key']
@@ -27,10 +39,7 @@ class DcmService:
         self.upstreams = self.get_upstreams()
 
     def start(self):
-        print(self.upstreams)
-        task_parameters = self.context['task_parameters']
-        result = self.run(task_parameters)
-
+        result = self.run(self.parameters)
         # SHOULD ADD ABILITY TO HAVE MULTIPLE OUTPUTS
         self.task_instance.xcom_push("OUTPUT",result,self.execution_date)
 
