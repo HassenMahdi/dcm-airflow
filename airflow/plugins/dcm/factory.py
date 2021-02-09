@@ -1,4 +1,4 @@
-from dcm.tasks.dcm.uploads import UploadConnectorHandler
+from dcm.tasks.dcm.uploads import UploadConnectorHandler, UploadCollectionConnectorHandler
 from dcm.tasks.dcm.imports import ImportConnectorHandler
 from dcm.tasks.dcm.transforms import ConcatHandler, JoinHandler, TransformationHandler, PipelineHandler
 
@@ -20,6 +20,8 @@ def dcm_hook_factory(**context):
         handler = PipelineHandler
     elif task_type in UploadConnectorHandler.upload_connector_types:
         handler = UploadConnectorHandler
+    elif task_type == "COLLECTION_UPLOAD":
+        handler = UploadCollectionConnectorHandler
     else:
         raise Exception(f'NO HANDLER FOUND FOR {task_type} TYPE')
 
