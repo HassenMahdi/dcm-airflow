@@ -18,3 +18,11 @@ class ImportConnectorHandler(BaseImportHandler):
             "file_id":response_body['file_id'],
             "folder":'import'
         }
+
+class ImportManualHandler(BaseImportHandler):
+    def run(self, params):
+        return  {
+            "sheet_id":params['sheet_id'],
+            "file_id":params['file_id'],
+            "folder":'import'
+        }

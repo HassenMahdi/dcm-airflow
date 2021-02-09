@@ -33,7 +33,7 @@ class UploadConnectorHandler(BaseUploadHandler):
         if run_uplaod.status_code == 200:
             return {'status':'success'}
         else:
-            raise Exception('Upload has Failed')
+            raise Exception('Upload Failed')
 
 
 class UploadCollectionConnectorHandler(BaseUploadHandler):
@@ -70,8 +70,8 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
                 status = uplaod_status.json()['status']
                 if status == 'DONE': 
                     return {'status':'success'}
-                elif status == 'ERROR':
-                    raise Exception('Upload has Failed')
+                elif status == 'ERROR' or uplaod_status.status_code == 500:
+                    raise Exception('Upload Failed')
 
         else:
                 raise Exception('Cleansing Failed')
