@@ -2,7 +2,7 @@
 import requests
 import json
 import os
-from dcm.tasks.dcm import DcmService
+from dcm.tasks.services import DcmService
 
 
 class BaseImportHandler(DcmService):

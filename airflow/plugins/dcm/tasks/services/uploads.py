@@ -1,7 +1,7 @@
 import os
 
 import requests
-from airflow.plugins.dcm.tasks.dcm import DcmService
+from dcm.tasks.services import DcmService
 
 import time
 

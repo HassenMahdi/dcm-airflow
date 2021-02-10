@@ -1,4 +1,4 @@
-from dcm.tasks.dcm import DcmService
+from dcm.tasks.services import DcmService
 import requests
 import os
 import json
