@@ -37,7 +37,7 @@ class UploadConnectorHandler(BaseUploadHandler):
 
 
 class UploadCollectionConnectorHandler(BaseUploadHandler):
-    cleansing_url = os.getenv("DCM_SERVICE_CLEANSING")
+    cleansing_url = os.getenv("DCM_SERVICE__CLEANSING")
 
     def run(self, params):
         file_id = self.input['file_id']
