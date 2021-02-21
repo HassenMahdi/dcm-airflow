@@ -57,7 +57,7 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
         }
 
         run_cleansing = requests.post(url=f"{self.cleansing_url}", json=cleansing_payload)
-        print("---------------->"+str(run_cleansing))
+        print("---------------->"+str(self.cleansing_url))
         job_id = run_cleansing.json()['job_id']
         job_status = requests.get(url=f"{self.cleansing_url}/metadata/{job_id}")
         if job_status.json()["totalErrors"] == 0:
