@@ -63,6 +63,7 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
             upload_paylod = {}
             print("---------------->"+str(self.base_url))
             start_uplaod = requests.post(url=f"{self.base_url}flow", json=upload_paylod)
+            print("---------------->"+str(upload_paylod))
             print("---------------->"+str(start_uplaod))
             flow_id = start_uplaod.json()
 
