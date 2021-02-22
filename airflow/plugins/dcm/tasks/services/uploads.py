@@ -60,17 +60,21 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
         job_id = run_cleansing.json()['job_id']
         job_status = requests.get(url=f"{self.cleansing_url}/metadata/{job_id}")
         if job_status.json()["totalErrors"] == 0:
-            upload_paylod = {}
-            print("---------------->"+str(self.base_url))
+            upload_paylod = {
+                "tags"  : params.get("tags", []),
+                "domain_id"  : domain_id,
+                "sheet_id"  : sheet_id,
+                "file_id"  : file_id,
+                "cleansing_job_id"  :cleansing_job_id,
+                "mapping_id"  : mapping_id,
+                "user_id"  : 'SYSTEM',
+            }
             start_uplaod = requests.post(url=f"{self.base_url}flow", json=upload_paylod)
-            print("---------------->"+str(upload_paylod))
-            print("---------------->"+str(start_uplaod))
             flow_id = start_uplaod.json()
 
             while True:
                 time.sleep(2)
                 uplaod_status = requests.post(url=f"{self.base_url}flow/{flow_id}/status/", json=upload_paylod)
-                print("---------------->"+str(uplaod_status))
                 status = uplaod_status.json()['status']
                 if status == 'DONE': 
                     return {'status':'success'}
