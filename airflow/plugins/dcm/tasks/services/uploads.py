@@ -74,7 +74,7 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
 
             while True:
                 time.sleep(2)
-                uplaod_status = requests.post(url=f"{self.base_url}flow/{flow_id}/status/", json=upload_paylod)
+                uplaod_status = requests.get(url=f"{self.base_url}flow/{flow_id}/status/")
                 status = uplaod_status.json()['upload_status']
                 if status == 'DONE': 
                     return {'status':'success'}
