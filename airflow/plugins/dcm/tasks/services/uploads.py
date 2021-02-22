@@ -37,7 +37,7 @@ class UploadConnectorHandler(BaseUploadHandler):
 
 
 class UploadCollectionConnectorHandler(BaseUploadHandler):
-    cleansing_url = os.getenv("DCM_SERVICE_CLEANSING")
+    cleansing_url = os.getenv("DCM_SERVICE__CLEANSING")
 
     def run(self, params):
         file_id = self.input['file_id']
@@ -57,10 +57,18 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
         }
 
         run_cleansing = requests.post(url=f"{self.cleansing_url}", json=cleansing_payload)
-        job_id = run_cleansing.json()['job_id']
-        job_status = requests.get(url=f"{self.cleansing_url}/metadata/{job_id}")
+        cleansing_job_id = run_cleansing.json()['job_id']
+        job_status = requests.get(url=f"{self.cleansing_url}/metadata/{cleansing_job_id}")
         if job_status.json()["totalErrors"] == 0:
-            upload_paylod = {}
+            upload_paylod = {
+                "tags"  : params.get("tags", []),
+                "domain_id"  : domain_id,
+                "sheet_id"  : sheet_id,
+                "file_id"  : file_id,
+                "cleansing_job_id"  :cleansing_job_id,
+                "mapping_id"  : mapping_id,
+                "user_id"  : 'SYSTEM',
+            }
             start_uplaod = requests.post(url=f"{self.base_url}flow", json=upload_paylod)
             flow_id = start_uplaod.json()
 
