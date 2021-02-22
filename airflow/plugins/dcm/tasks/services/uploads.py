@@ -65,7 +65,7 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
                 "domain_id"  : domain_id,
                 "sheet_id"  : sheet_id,
                 "file_id"  : file_id,
-                "cleansing_job_id"  :cleansing_job_id,
+                "cleansing_job_id"  :job_id,
                 "mapping_id"  : mapping_id,
                 "user_id"  : 'SYSTEM',
             }
