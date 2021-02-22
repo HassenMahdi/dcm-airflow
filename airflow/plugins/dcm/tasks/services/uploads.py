@@ -52,7 +52,7 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
             "worksheet_id":sheet_id,
             "mapping_id":mapping_id,
             "domain_id":domain_id,
-            "is_transformed":is_tansformed,
+            "is_transformed":False,
             "modifications":{}
         }
 
