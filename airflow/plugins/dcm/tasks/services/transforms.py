@@ -16,7 +16,7 @@ class BaseTransformationHandler(DcmService):
 
     def transform(self, file_id,sheet_id,transformation_id):
         run_transf = requests.get(url=f"{self.base_url}{file_id}/{sheet_id}/{transformation_id}")
-        job_id = run_transf.text.replace('"','')
+        job_id = run_transf.text.replace('"','').strip()
         print(job_id)
         while True:
                 time.sleep(2)
