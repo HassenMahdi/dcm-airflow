@@ -20,7 +20,7 @@ class BaseTransformationHandler(DcmService):
         while True:
                 time.sleep(2)
                 uplaod_status = requests.get(url=f"{self.base_url}transformation/{run_transf.text}/status")
-                print(str(uplaod_status))
+                print(f"{self.base_url}transformation/{run_transf.text}/status")
                 status = uplaod_status.json()['job_status']
                 if status == 'DONE': 
                     return uplaod_status.json()['transformed_file_id'].replace("\\", "/")
