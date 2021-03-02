@@ -16,9 +16,11 @@ class BaseTransformationHandler(DcmService):
 
     def transform(self, file_id,sheet_id,transformation_id):
         run_transf = requests.get(url=f"{self.base_url}{file_id}/{sheet_id}/{transformation_id}")
+        print(run_transf.text)
         while True:
                 time.sleep(2)
                 uplaod_status = requests.get(url=f"{self.base_url}transformation/{run_transf.text}/status")
+                print(str(uplaod_status))
                 status = uplaod_status.json()['job_status']
                 if status == 'DONE': 
                     return uplaod_status.json()['transformed_file_id'].replace("\\", "/")
