@@ -2,6 +2,7 @@ from dcm.tasks.services import DcmService
 import requests
 import os
 import json
+import time
 
 class BaseTransformationHandler(DcmService):
     base_url = os.getenv("DCM_SERVICE__TRANSFORM")
@@ -21,7 +22,7 @@ class BaseTransformationHandler(DcmService):
                 status = uplaod_status.json()['job_status']
                 if status == 'DONE': 
                     return uplaod_status.json()['transformed_file_id'].replace("\\", "/")
-                elif status == 'ERROR' or uplaod_status.status_code == 500:
+                elif status == 'ERROR':
                     raise Exception('Transforming Failed')
 
     def save_transform(self, node):
