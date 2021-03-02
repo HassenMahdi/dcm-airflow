@@ -15,8 +15,14 @@ class BaseTransformationHandler(DcmService):
 
     def transform(self, file_id,sheet_id,transformation_id):
         run_transf = requests.get(url=f"{self.base_url}{file_id}/{sheet_id}/{transformation_id}")
-        print(run_transf.text)
-        return json.loads(run_transf.text)['transformed_file_id'].replace("\\", "/")
+        while True:
+                time.sleep(2)
+                uplaod_status = requests.get(url=f"{self.base_url}transformation/{run_transf.text}/status")
+                status = uplaod_status.json()['job_status']
+                if status == 'DONE': 
+                    return uplaod_status.json()['transformed_file_id'].replace("\\", "/")
+                elif status == 'ERROR' or uplaod_status.status_code == 500:
+                    raise Exception('Transforming Failed')
 
     def save_transform(self, node):
         save_transf = requests.post(url=f"{self.base_url}",json={
