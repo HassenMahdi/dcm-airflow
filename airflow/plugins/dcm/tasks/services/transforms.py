@@ -15,6 +15,7 @@ class BaseTransformationHandler(DcmService):
 
     def transform(self, file_id,sheet_id,transformation_id):
         run_transf = requests.get(url=f"{self.base_url}{file_id}/{sheet_id}/{transformation_id}")
+        print(run_transf.text)
         return json.loads(run_transf.text)['transformed_file_id'].replace("\\", "/")
 
     def save_transform(self, node):
