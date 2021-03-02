@@ -17,13 +17,9 @@ class BaseTransformationHandler(DcmService):
     def transform(self, file_id,sheet_id,transformation_id):
         run_transf = requests.get(url=f"{self.base_url}{file_id}/{sheet_id}/{transformation_id}")
         job_id = run_transf.text.replace('"','').strip()
-        print(job_id)
         while True:
                 time.sleep(2)
                 uplaod_status = requests.get(url=f"{self.base_url}transformation/{job_id}/status")
-                print(f"{self.base_url}transformation/{job_id}/status")
-                print(str(uplaod_status))
-                print(uplaod_status['job_status'])
                 status = uplaod_status.json()['job_status']
                 if status == 'DONE': 
                     return uplaod_status.json()['transformed_file_id'].replace("\\", "/")
