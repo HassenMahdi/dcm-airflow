@@ -30,10 +30,22 @@ class UploadConnectorHandler(BaseUploadHandler):
             "sheet_id": sheet_id
         }
         run_uplaod = requests.post(url=f"{self.base_url}connector", json=payload)
-        if run_uplaod.status_code == 200:
-            return {'status':'success'}
-        else:
-            raise Exception('Upload Failed')
+        job_id = run_upload.json()['job_id']
+        print(job_id)
+        while True:
+                time.sleep(2)
+                uplaod_status = requests.get(url=f"{self.base_url}connector/{job_id}")
+                print(f"{self.base_url}connector/{job_id}")
+                print(str(upload_status))
+                status = uplaod_status.json()['job_status']
+                if status == 'DONE': 
+                    return {'status':'success'}
+                elif status == 'ERROR' or uplaod_status.status_code == 500:
+                    raise Exception('Upload Failed')
+#         if run_uplaod.status_code == 200:
+#             return {'status':'success'}
+#         else:
+#             raise Exception('Upload Failed')
 
 
 class UploadCollectionConnectorHandler(BaseUploadHandler):
