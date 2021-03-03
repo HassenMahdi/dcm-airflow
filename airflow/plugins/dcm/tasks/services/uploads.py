@@ -30,7 +30,7 @@ class UploadConnectorHandler(BaseUploadHandler):
             "sheet_id": sheet_id
         }
         run_uplaod = requests.post(url=f"{self.base_url}connector", json=payload)
-        job_id = run_upload.json()['job_id']
+        job_id = run_uplaod.json()['job_id']
         print(job_id)
         while True:
                 time.sleep(2)
