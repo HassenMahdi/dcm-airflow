@@ -40,7 +40,7 @@ class UploadConnectorHandler(BaseUploadHandler):
                 status = uplaod_status.json()['job_status']
                 if status == 'DONE': 
                     return {'status':'success'}
-                elif status == 'ERROR' or uplaod_status.status_code == 500:
+                elif status == 'ERROR':
                     raise Exception('Upload Failed')
 #         if run_uplaod.status_code == 200:
 #             return {'status':'success'}
