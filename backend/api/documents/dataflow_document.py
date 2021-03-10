@@ -8,7 +8,7 @@ from api.db.airflow import mongo
 class DataFlowDocument:
     __TABLE__ = 'dataflow'
 
-    def list_pipelines(self, pipe_id=None):
+    def list_pipelines(self, uid, pipe_id=None):
         """Fetches all pipelines' metadata, if pipe_id, fetches a pipeline nodes and links"""
 
         dataflow = mongo.db[self.__TABLE__]
@@ -17,7 +17,7 @@ class DataFlowDocument:
             return {"name": pipe["name"], "id": pipe["pipeline_id"], "created_on": pipe["created_on"],
                     "description": pipe["description"], "modified_on": pipe.get("modified_on")}
 
-        pipes = dataflow.find()
+        pipes = dataflow.find({"uid": uid})
         return [{"name": pipe["name"], "id": pipe["pipeline_id"], "created_on": pipe["created_on"],
                  "description": pipe["description"], "modified_on": pipe.get("modified_on")} for pipe in pipes]
 
@@ -36,16 +36,16 @@ class DataFlowDocument:
         exist_pipeline = self.get_pipeline(template["pipeline_id"])
         if exist_pipeline:
             dataflow.update_one(
-                    {'pipeline_id': template["pipeline_id"]},
-                    {'$set': {
-                        "nodes": template["nodes"],
-                        "links": template["links"],
-                        "name": template["name"],
-                        "description": template["description"],
-                        "modified_on": datetime.now()
-                    }
-                    }, upsert=False
-                )
+                {'pipeline_id': template["pipeline_id"]},
+                {'$set': {
+                    "nodes": template["nodes"],
+                    "links": template["links"],
+                    "name": template["name"],
+                    "description": template["description"],
+                    "modified_on": datetime.now()
+                }
+                }, upsert=False
+            )
 
         else:
             template["created_on"] = datetime.now()

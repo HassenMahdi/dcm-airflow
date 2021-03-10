@@ -11,15 +11,15 @@ from api.services.pipeline_service import save_pipeline
 
 api = Namespace("dataflow")
 
-@api.route("/list-pipelines", methods=["GET"])
+@api.route("/list-pipelines/<uid>", methods=["GET"])
 @api.route("/save", methods=["POST"])
 @api.route("/delete/<pipe_id>/", methods=["DELETE"])
 class Pipelines(Resource):
 
     @api.doc("Returns all pipelines' metadata")
-    def get(self):
+    def get(self,uid):
         dataflow_document = DataFlowDocument()
-        pipes = dataflow_document.list_pipelines()
+        pipes = dataflow_document.list_pipelines(uid)
         return jsonify(pipes)
 
     @api.doc("Saves or update a pipeline")
