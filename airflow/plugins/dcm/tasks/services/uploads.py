@@ -42,7 +42,6 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
     def run(self, params):
         file_id = self.input['file_id']
         sheet_id = self.input['sheet_id']
-        is_tansformed = True if self.input.get('transformation_id') else False
         mapping_id = params["mapping_id"]
         domain_id = params["domain_id"]
 
@@ -52,14 +51,21 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
             "worksheet_id":sheet_id,
             "mapping_id":mapping_id,
             "domain_id":domain_id,
-            "is_transformed":is_tansformed,
-            "modifications":{}
+            "is_transformed":False,
+            "modifications":{},
+            "task_id":self.task_id,
+            "execution_date": self.execution_date.timestamp() 
         }
 
         run_cleansing = requests.post(url=f"{self.cleansing_url}", json=cleansing_payload)
         cleansing_job_id = run_cleansing.json()['job_id']
+
+        self.task_instance.xcom_push("CLEANSING_JOB_ID",cleansing_job_id,self.execution_date)
+
         job_status = requests.get(url=f"{self.cleansing_url}/metadata/{cleansing_job_id}")
+        
         if job_status.json()["totalErrors"] == 0:
+            self.task_instance.xcom_push("CLEANSING_PASSED",True,self.execution_date)
             upload_paylod = {
                 "tags"  : params.get("tags", []),
                 "domain_id"  : domain_id,
@@ -67,19 +73,27 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
                 "file_id"  : file_id,
                 "cleansing_job_id"  :cleansing_job_id,
                 "mapping_id"  : mapping_id,
-                "user_id"  : 'SYSTEM',
+                "user_id"  : None,
+                "task_id":self.task_id,
+                "execution_date": self.execution_date.timestamp() 
             }
+            print(upload_paylod)
             start_uplaod = requests.post(url=f"{self.base_url}flow", json=upload_paylod)
             flow_id = start_uplaod.json()
-
+            
             while True:
-                time.sleep(2)
+                time.sleep(5)
                 uplaod_status = requests.get(url=f"{self.base_url}flow/{flow_id}/status/")
                 status = uplaod_status.json()['upload_status']
-                if status == 'DONE': 
-                    return {'status':'success'}
+                if status == 'DONE':  
+                    return {    
+                                'status':'success',
+                                "sheet_id"  : sheet_id,
+                                "file_id"  : file_id
+                            }
                 elif status == 'ERROR' or uplaod_status.status_code == 500:
                     raise Exception('Upload Failed')
 
         else:
+                self.task_instance.xcom_push("CLEANSING_PASSED",False,self.execution_date)
                 raise Exception('Cleansing Failed')

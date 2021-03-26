@@ -40,7 +40,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/airflow-logs:/opt/airflow/logs
     ports:
-      - "8080:8080"
+      - "5020:8080"
     entrypoint: 
       /airflow-entrypoint.sh
     healthcheck:

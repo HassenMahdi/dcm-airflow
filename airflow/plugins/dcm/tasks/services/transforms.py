@@ -37,7 +37,7 @@ class PipelineHandler(BaseTransformationHandler):
 
 # TRANSFOMERES
 class TransformationHandler(BaseTransformationHandler):
-    transformation_types = ["filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "pycode"]
+    transformation_types = ["filter-category","filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "pycode", "hash"]
     
     def run(self, params):
         # SAVE TRANSFORMATION
@@ -74,4 +74,3 @@ class JoinHandler(BaseTransformationHandler):
         transformation_id = self.save_transform(node)
         transformed_file_id = self.transform(self.input['file_id'],self.input['sheet_id'], transformation_id)
         return self.construct_output(transformed_file_id, transformation_id)
-

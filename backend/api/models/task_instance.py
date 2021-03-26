@@ -35,7 +35,22 @@ class TaskInstance(db.Model):
     # task_fail = relationship("TaskFail", lazy=False)
 
     @property
-    def output(self, key='OUTPUT'):
+    def output(self):
+        return self.get_xcom("OUTPUT")
+
+    @property
+    def input(self):
+        return self.get_xcom("INPUT")
+
+    @property
+    def cleansing_passed(self):
+        return self.get_xcom("CLEANSING_PASSED")
+
+    @property
+    def cleansing_job_id(self):
+        return self.get_xcom("CLEANSING_JOB_ID")
+
+    def get_xcom(self, key):
 
         dag_id = self.dag_id
         task_ids = self.task_id
@@ -63,3 +78,5 @@ class TaskInstance(db.Model):
             xcom = query.with_entities(XCom.value).first()
             if xcom:
                 return XCom.deserialize_value(xcom)
+
+                

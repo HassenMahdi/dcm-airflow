@@ -7,12 +7,16 @@ class DcmService:
     
     @property
     def input(self, input_type='INPUT'):
-        upstream = self.upstreams[input_type]
-        return self.task_instance.xcom_pull(task_ids=upstream["upstream_task_id"], key=upstream["upstream_input_type"])
+        upstream = self.upstreams.get(input_type, None)
+        if upstream:
+            return self.task_instance.xcom_pull(task_ids=upstream["upstream_task_id"], key=upstream["upstream_input_type"])
+        return None
 
     def get_input(self, input_type):
         upstream = self.upstreams[input_type]
-        return self.task_instance.xcom_pull(task_ids=upstream["upstream_task_id"], key=upstream["upstream_input_type"])
+        if upstream:
+            return self.task_instance.xcom_pull(task_ids=upstream["upstream_task_id"], key=upstream["upstream_input_type"])
+        return None
     
 
     def __init__(self, context) -> None:
@@ -39,6 +43,9 @@ class DcmService:
         self.upstreams = self.get_upstreams()
 
     def start(self):
+        # REGITER THE INPUT
+        self.task_instance.xcom_push("INPUT",self.input,self.execution_date)
+
         result = self.run(self.parameters)
         # SHOULD ADD ABILITY TO HAVE MULTIPLE OUTPUTS
         self.task_instance.xcom_push("OUTPUT",result,self.execution_date)

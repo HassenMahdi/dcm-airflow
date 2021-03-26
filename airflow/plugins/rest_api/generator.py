@@ -104,10 +104,10 @@ class Dags(BaseView):
                 task_type = task["type"]
 
                 op_kwargs = "{" + (
-                    f"'task_parameters':{json.dumps(task)},"
+                    f"'task_parameters':{repr(task)},"
                     f"'task_type':'{task_type}',"
                     f"'task_label':'{task_label}',"
-                    f"'dag_metadata':"+"{"+f"'tasks':{json.dumps(tasks_meta)}, 'dependincies': {json.dumps(dependincies)} "+"}"+f","
+                    f"'dag_metadata':"+"{"+f"'tasks':{repr(tasks_meta)}, 'dependincies': {repr(dependincies)} "+"}"+f","
                 ) + "}"
 
                 task_definition = (

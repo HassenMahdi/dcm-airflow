@@ -13,6 +13,9 @@ dag_instance = api.model('dag_task', {
         "end_date": fields.DateTime,
         "state": fields.String,
         "output": fields.Raw,
+        "input": fields.Raw,
+        "cleansing_passed": fields.Raw,
+        "cleansing_job_id": fields.Raw,
     })
 
 dag_run = api.model('dag_run', {
