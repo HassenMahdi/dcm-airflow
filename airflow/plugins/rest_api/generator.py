@@ -64,7 +64,7 @@ class Dags(BaseView):
         print(request.json)
 
         dag_id = paylaod['id']
-        schedule_interval = None
+        schedule_interval = paylaod['scheduler']
         default_args = {}
 
         tasks = paylaod['nodes']

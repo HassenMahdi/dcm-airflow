@@ -16,7 +16,8 @@ def publish_to_airflow(pipe_id):
     dag_definition = dict(
         id=pipeline['pipeline_id'],
         nodes=pipeline['nodes'],
-        links=pipeline['links']
+        links=pipeline['links'],
+        scheduler=pipeline['scheduler']
     )
     response = requests.post(url=f"{airflow_uri}dags/", json=dag_definition)
 

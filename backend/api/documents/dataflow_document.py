@@ -42,6 +42,7 @@ class DataFlowDocument:
                     "links": template["links"],
                     "name": template["name"],
                     "description": template["description"],
+                    "scheduler": template["scheduler"],
                     "modified_on": datetime.now()
                 }
                 }, upsert=False
