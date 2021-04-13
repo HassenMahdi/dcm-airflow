@@ -1,4 +1,6 @@
 # This is the class you derive to create a plugin
+from datetime import datetime
+
 from flask import Blueprint
 from flask_admin import BaseView, expose
 
@@ -30,6 +32,7 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 # IMPORT PLUGINS FOR DCM MODULES
 from airflow.macros import dcm_hook_factory
+from datetime import timedelta, datetime
 """
 
 logging_string = """
@@ -64,18 +67,18 @@ class Dags(BaseView):
         print(request.json)
 
         dag_id = paylaod['id']
-        schedule_interval = None
+        schedule_interval = paylaod['scheduler']
+        start_date = paylaod['start_date']
         default_args = {}
 
         tasks = paylaod['nodes']
         dependincies = paylaod['links']
-
         dag_definition = (
         f"dag = DAG("
             f"dag_id='{dag_id}',"
             f"default_args={default_args},"
             f"schedule_interval={schedule_interval},"
-            f"start_date=days_ago(2),"
+            f"start_date={start_date},"
             f"is_paused_upon_creation=False,"
         f")"
         )

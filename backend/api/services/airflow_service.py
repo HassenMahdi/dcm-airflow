@@ -1,7 +1,9 @@
+import datetime
 import json
 
 from flask import current_app
 import requests
+from dateutil.parser import parse
 
 from api.db.airflow import db
 from api.models.dag_model import DagModel
@@ -13,10 +15,15 @@ from api.services.pipeline_service import get_pipeline
 def publish_to_airflow(pipe_id):
     pipeline = get_pipeline(pipe_id)
     airflow_uri = current_app.config["AIRFLOW_ENDPOINT"]
+
+    dt = parse(pipeline['start_date'])
+    formated_date = f"datetime({dt.year}, {dt.month}, {dt.day}, {dt.hour}, {dt.minute})"
     dag_definition = dict(
         id=pipeline['pipeline_id'],
         nodes=pipeline['nodes'],
-        links=pipeline['links']
+        links=pipeline['links'],
+        scheduler=pipeline['scheduler'],
+        start_date= formated_date
     )
     response = requests.post(url=f"{airflow_uri}dags/", json=dag_definition)
 

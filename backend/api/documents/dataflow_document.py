@@ -32,7 +32,6 @@ class DataFlowDocument:
         """Saves or updates a pipeline document"""
 
         dataflow = mongo.db[self.__TABLE__]
-
         exist_pipeline = self.get_pipeline(template["pipeline_id"])
         if exist_pipeline:
             dataflow.update_one(
@@ -42,6 +41,8 @@ class DataFlowDocument:
                     "links": template["links"],
                     "name": template["name"],
                     "description": template["description"],
+                    "scheduler": template["scheduler"],
+                    "start_date": template["start_date"],
                     "modified_on": datetime.now()
                 }
                 }, upsert=False
