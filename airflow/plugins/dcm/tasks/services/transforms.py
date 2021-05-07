@@ -37,7 +37,7 @@ class PipelineHandler(BaseTransformationHandler):
 
 # TRANSFOMERES
 class TransformationHandler(BaseTransformationHandler):
-    transformation_types = ["filter-category","filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "pycode", "hash"]
+    transformation_types = ["filter-category","filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "hash"]
     
     def run(self, params):
         # SAVE TRANSFORMATION
@@ -71,6 +71,29 @@ class JoinHandler(BaseTransformationHandler):
                 "join_file_id": join_data['file_id'],
                 "join_sheet_id": join_data['sheet_id'],
             }
+        transformation_id = self.save_transform(node)
+        transformed_file_id = self.transform(self.input['file_id'],self.input['sheet_id'], transformation_id)
+        return self.construct_output(transformed_file_id, transformation_id)
+
+
+
+class PycodeHandler(BaseTransformationHandler):
+    def run(self, params):
+        # SAVE TRANSFORMATION
+        node = {
+                **params,
+                "inputs":[]
+        }
+        for input in params.get('inputs')[1:]:
+            port = input.get('portId')
+            name = input.get('name')
+            input_data = self.get_input(port)
+            node['inputs'].append({
+                "name": name,
+                "file_id": input_data['file_id'],
+                "sheet_id": input_data['sheet_id'],
+            })
+
         transformation_id = self.save_transform(node)
         transformed_file_id = self.transform(self.input['file_id'],self.input['sheet_id'], transformation_id)
         return self.construct_output(transformed_file_id, transformation_id)

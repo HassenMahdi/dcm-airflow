@@ -1,6 +1,6 @@
 from dcm.tasks.services.uploads import UploadConnectorHandler, UploadCollectionConnectorHandler
 from dcm.tasks.services.imports import ImportConnectorHandler, ImportManualHandler
-from dcm.tasks.services.transforms import ConcatHandler, JoinHandler, TransformationHandler, PipelineHandler
+from dcm.tasks.services.transforms import ConcatHandler, JoinHandler, TransformationHandler, PipelineHandler, PycodeHandler
 
 
 def dcm_hook_factory(**context):
@@ -24,6 +24,8 @@ def dcm_hook_factory(**context):
         handler = UploadCollectionConnectorHandler
     elif task_type == "IMPORT_MANUAL":
         handler = ImportManualHandler
+    elif task_type == "pycode":
+        handler = PycodeHandler
     else:
         raise Exception(f'NO HANDLER FOUND FOR {task_type} TYPE')
 
