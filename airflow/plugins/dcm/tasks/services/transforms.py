@@ -44,15 +44,17 @@ class PipelineHandler(BaseTransformationHandler):
         transformed_file_id = self.transform(self.input['file_id'],self.input['sheet_id'], transformation_id)
         return self.construct_output(transformed_file_id, transformation_id)
 
+
 # TRANSFOMERES
 class TransformationHandler(BaseTransformationHandler):
-    transformation_types = ["hash-by-category", "filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "pycode", "hash"]
+    transformation_types = ["rsu-check", "hash-by-category", "filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "pycode", "hash"]
     
     def run(self, params):
         # SAVE TRANSFORMATION
         transformation_id = self.save_transform(self.parameters)
         transformed_file_id = self.transform(self.input['file_id'],self.input['sheet_id'], transformation_id)
         return self.construct_output(transformed_file_id, transformation_id)
+
 
 # Concat
 class ConcatHandler(BaseTransformationHandler):
