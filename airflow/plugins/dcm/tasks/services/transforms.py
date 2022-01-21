@@ -37,7 +37,7 @@ class PipelineHandler(BaseTransformationHandler):
 
 # TRANSFOMERES
 class TransformationHandler(BaseTransformationHandler):
-    transformation_types = ["filter-category","filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "hash"]
+    transformation_types = ["map", "select", "filter-category","filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "hash"]
     
     def run(self, params):
         # SAVE TRANSFORMATION
