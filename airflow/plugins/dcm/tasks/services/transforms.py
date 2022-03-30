@@ -37,7 +37,7 @@ class PipelineHandler(BaseTransformationHandler):
 
 # TRANSFOMERES
 class TransformationHandler(BaseTransformationHandler):
-    transformation_types = ["filter-category","filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "hash"]
+    transformation_types = ["map_standard", "map", "select", "filter-category","filter", "find-replace", "merge", "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby", "hash"]
     
     def run(self, params):
         # SAVE TRANSFORMATION
@@ -84,7 +84,7 @@ class PycodeHandler(BaseTransformationHandler):
                 **params,
                 "inputs":[]
         }
-        for input in params.get('inputs')[1:]:
+        for input in params.get('inputs', [])[1:]:
             port = input.get('portId')
             name = input.get('name')
             input_data = self.get_input(port)

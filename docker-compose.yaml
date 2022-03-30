@@ -2,8 +2,6 @@ version: "2.1"
 services:
   postgres:
     image: postgres:12
-    volumes:
-      - ../postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
@@ -22,8 +20,8 @@ services:
     ports:
       - "8793"
     volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/airflow-logs:/opt/airflow/logs
+      - /home/ubuntu/ghpsj/volumes/airflow/dags:/opt/airflow/dags
+      - /home/ubuntu/ghpsj/volumes/airflow/airflow-logs:/opt/airflow/logs
     command: scheduler
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
@@ -39,8 +37,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/airflow-logs:/opt/airflow/logs
+      - /home/ubuntu/ghpsj/volumes/airflow/dags:/opt/airflow/dags
+      - /home/ubuntu/ghpsj/volumes/airflow/airflow-logs:/opt/airflow/logs
     ports:
       - "8080:8080"
     entrypoint: 
@@ -56,7 +54,7 @@ services:
     ports:
       - "5006:5000"
     volumes:
-      - ./airflow/airflow-logs:/airflow-logs
+      - /home/ubuntu/ghpsj/volumes/airflow/airflow-logs:/airflow-logs
     depends_on:
       - postgres
     env_file:
