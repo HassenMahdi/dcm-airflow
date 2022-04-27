@@ -27,7 +27,7 @@ class CheckHandler(BaseCheckHandler):
         if result_id:
             self.task_instance.xcom_push("result_id",result_id,self.execution_date)
         
-            results_req = requests.get(url=f"{self.base_url}check/simple/{self.result_id}")
+            results_req = requests.get(url=f"{self.base_url}/simple/{self.result_id}")
             results_body =  json.loads(results_req.text)
             if results_body["totals"]["ERROR"] > 0:
                 raise Exception('FAILED_EXCEPTION')
