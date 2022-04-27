@@ -49,6 +49,10 @@ class TaskInstance(db.Model):
     @property
     def cleansing_job_id(self):
         return self.get_xcom("CLEANSING_JOB_ID")
+    
+    @property
+    def result_id(self):
+        return self.get_xcom("result_id")
 
     def get_xcom(self, key):
 

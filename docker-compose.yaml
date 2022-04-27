@@ -20,8 +20,8 @@ services:
     ports:
       - "8793"
     volumes:
-      - /home/ubuntu/ghpsj/volumes/airflow/dags:/opt/airflow/dags
-      - /home/ubuntu/ghpsj/volumes/airflow/airflow-logs:/opt/airflow/logs
+      - ./dags:/opt/airflow/dags
+      - ./airflow-logs:/opt/airflow/logs
     command: scheduler
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
@@ -37,8 +37,8 @@ services:
     env_file:
       - .env
     volumes:
-      - /home/ubuntu/ghpsj/volumes/airflow/dags:/opt/airflow/dags
-      - /home/ubuntu/ghpsj/volumes/airflow/airflow-logs:/opt/airflow/logs
+      - ./dags:/opt/airflow/dags
+      - ./airflow-logs:/opt/airflow/logs
     ports:
       - "8080:8080"
     entrypoint: 
@@ -54,7 +54,7 @@ services:
     ports:
       - "5006:5000"
     volumes:
-      - /home/ubuntu/ghpsj/volumes/airflow/airflow-logs:/airflow-logs
+      - ./airflow-logs:/airflow-logs
     depends_on:
       - postgres
     env_file:
