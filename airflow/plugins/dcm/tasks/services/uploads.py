@@ -19,7 +19,7 @@ class BaseUploadHandler(DcmService):
             
 
 class UploadConnectorHandler(BaseUploadHandler):
-    upload_connector_types = ["MONGODB_UPLOAD_CONNECTOR", "BLOB_STORAGE_UPLOAD_CONNECTOR", "SQL_UPLOAD_CONNECTOR", "POSTGRES_UPLOAD_CONNECTOR"]
+    upload_connector_types = ["MYSQL_UPLOAD_CONNECTOR", "MONGODB_UPLOAD_CONNECTOR", "BLOB_STORAGE_UPLOAD_CONNECTOR", "SQL_UPLOAD_CONNECTOR", "POSTGRES_UPLOAD_CONNECTOR"]
     def run(self, params):
         # FORM PAYLOAD
         file_id = self.input['file_id']

@@ -18,13 +18,6 @@ from api.utils.utils import is_container
 class TaskInstance(db.Model):
     __tablename__ = 'task_instance'
 
-    # __table_args__ = (
-    #     ForeignKeyConstraint(
-    #         ['task_id', 'dag_id', 'execution_date'],
-    #         ['task_fail.task_id', 'task_fail.dag_id', 'task_fail.execution_date']
-    #     ),
-    # )
-
     task_id = db.Column(db.String, primary_key=True)
     dag_id = db.Column(db.String, primary_key=True)
     execution_date = db.Column(db.Date, primary_key=True)
@@ -37,6 +30,10 @@ class TaskInstance(db.Model):
     @property
     def output(self):
         return self.get_xcom("OUTPUT")
+    
+    @output.setter
+    def output(self, value):
+        return self.set_xcom("OUTPUT", value)
 
     @property
     def input(self):
@@ -49,10 +46,6 @@ class TaskInstance(db.Model):
     @property
     def cleansing_job_id(self):
         return self.get_xcom("CLEANSING_JOB_ID")
-    
-    @property
-    def result_id(self):
-        return self.get_xcom("result_id")
 
     def get_xcom(self, key):
 
@@ -82,5 +75,13 @@ class TaskInstance(db.Model):
             xcom = query.with_entities(XCom.value).first()
             if xcom:
                 return XCom.deserialize_value(xcom)
+            
+    
+    def set_xcom(self, key, value, execution_date=None):
 
-                
+        XCom.set(
+            key=key,
+            value=value,
+            task_id=self.task_id,
+            dag_id=self.dag_id,
+            execution_date=execution_date or self.execution_date)

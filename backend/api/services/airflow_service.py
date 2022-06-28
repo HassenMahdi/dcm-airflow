@@ -1,7 +1,10 @@
 import json
+from multiprocessing.connection import wait
+from time import sleep
 
 from flask import current_app
 import requests
+import time
 
 from api.db.airflow import db
 from api.models.dag_model import DagModel
@@ -26,19 +29,22 @@ def publish_to_airflow(pipe_id):
         raise Exception('Failed to publish Pipeline')
 
 
-def run_dag_in_airflow(pipeline_id, run_params={}):
+def run_dag_in_airflow(pipeline_id, run_params={}, retry=3, timeout=1000):
     airflow_uri = current_app.config["AIRFLOW_ENDPOINT"]
 
     payload = {
         "dag_id": pipeline_id,
         "conf": run_params
     }
-    response = requests.post(url=f"{airflow_uri}dags/trigger", json=payload)
 
-    if response.status_code == 200:
-        return json.loads(response.text)
-    else:
-        raise Exception('Failed to Trigger Pipeline')
+    for attempt in range(0, retry):
+        response = requests.post(url=f"{airflow_uri}dags/trigger", json=payload)
+        if response.status_code == 200:
+            return json.loads(response.text)
+        elif attempt < retry:
+            time.sleep(timeout)
+        else:
+            raise Exception('Failed to Trigger Pipeline')
 
 
 def un_pause_dag(dag_id):

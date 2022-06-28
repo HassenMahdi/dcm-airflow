@@ -16,7 +16,6 @@ dag_instance = api.model('dag_task', {
         "input": fields.Raw,
         "cleansing_passed": fields.Raw,
         "cleansing_job_id": fields.Raw,
-        "result_id": fields.Raw,
     })
 
 dag_run = api.model('dag_run', {

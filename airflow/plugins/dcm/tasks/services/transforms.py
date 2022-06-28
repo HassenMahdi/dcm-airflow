@@ -44,7 +44,7 @@ class TransformationHandler(BaseTransformationHandler):
     transformation_types = ["map_standard", "map", "select", "filter-category", "filter", "find-replace", "merge",
                             "replace", "delete-rows", "default-value", "split", "calculator", "format-date", "groupby",
                             "hash", "key_select",
-                            "matching_score", "request"]
+                            "matching_score", "request", "substring"]
 
     def run(self, params):
         # SAVE TRANSFORMATION

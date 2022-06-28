@@ -4,6 +4,7 @@ import json
 
 class DcmService:
     base_url = None
+    task_type = None
     
     @property
     def input(self, input_type='INPUT'):
@@ -38,6 +39,7 @@ class DcmService:
         self.task_instance = self.context['task_instance']
         self.task_id = self.context['task_instance'].task_id
         self.key = self.parameters['key']
+        self.task_type = self.parameters['type']
         
         # GENERATE LIST OF [{upstream_task_id, upstream_input_type, ti_input_type}]
         self.upstreams = self.get_upstreams()
