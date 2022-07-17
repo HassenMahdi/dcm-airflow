@@ -19,6 +19,10 @@ class BaseTransformationHandler(DcmService):
         run_transf = requests.get(url=f"{self.base_url}{file_id}/{sheet_id}/{transformation_id}")
         return json.loads(run_transf.text)['transformed_file_id'].replace("\\", "/")
 
+    def load_plugin(self, plugin_id):
+        run_transf = requests.get(url=f"{self.base_url}plugins/{plugin_id}")
+        return json.loads(run_transf.text)['transformed_file_id'].replace("\\", "/")
+
     def save_transform(self, node):
         save_transf = requests.post(url=f"{self.base_url}", json={
             "name": f"{self.task_id}_{self.execution_date}",
@@ -102,4 +106,12 @@ class PycodeHandler(BaseTransformationHandler):
 
         transformation_id = self.save_transform(node)
         transformed_file_id = self.transform(self.input['file_id'], self.input['sheet_id'], transformation_id)
+        return self.construct_output(transformed_file_id, transformation_id)
+
+
+class PluginHandler(BaseTransformationHandler):
+    def run(self, params):
+        # SAVE TRANSFORMATION
+        transformation_id = self.save_transform(self.parameters)
+        transformed_file_id = self.load_plugin(self.parameters['plugin_id'])
         return self.construct_output(transformed_file_id, transformation_id)
