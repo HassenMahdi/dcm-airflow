@@ -22,7 +22,7 @@ services:
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/airflow-logs:/opt/airflow/logs
-    command: scheduler
+    command: airflow scheduler
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
       interval: 30s
@@ -40,9 +40,9 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/airflow-logs:/opt/airflow/logs
     ports:
-      - "5020:8080"
-    entrypoint: 
-      /airflow-entrypoint.sh
+      - "8080:8080"
+    # entrypoint: 
+    #   /airflow-entrypoint.sh
     healthcheck:
       test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
       interval: 30s

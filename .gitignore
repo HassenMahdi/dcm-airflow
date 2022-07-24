@@ -4,3 +4,5 @@ dags/
 __pycache__/
 .env
 
+airflow-logs*/
+dags*/
