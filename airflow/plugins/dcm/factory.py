@@ -24,8 +24,6 @@ def dcm_hook_factory(**context):
         handler = UploadCollectionConnectorHandler
     elif task_type == "IMPORT_MANUAL":
         handler = ImportManualHandler
-    elif task_type == "pycode":
-        handler = PycodeHandler
     elif task_type == "Plugin":
         handler = PluginHandler
     else:
