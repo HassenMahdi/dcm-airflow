@@ -19,7 +19,7 @@ class BaseUploadHandler(DcmService):
             
 
 class UploadConnectorHandler(BaseUploadHandler):
-    upload_connector_types = ["BLOB_STORAGE_UPLOAD_CONNECTOR", "SQL_UPLOAD_CONNECTOR", "POSTGRES_UPLOAD_CONNECTOR"]
+    upload_connector_types = ["BLOB_STORAGE_UPLOAD_CONNECTOR", "SQL_UPLOAD_CONNECTOR", "POSTGRES_UPLOAD_CONNECTOR","GCPBIGQUERY_UPLOAD_CONNECTOR","GCPCLOUDSTORAGE_UPLOAD_CONNECTOR", "SFTPSERVER_UPLOAD_CONNECTOR"]
     def run(self, params):
         # FORM PAYLOAD
         file_id = self.input['file_id']
@@ -77,7 +77,6 @@ class UploadCollectionConnectorHandler(BaseUploadHandler):
                 "task_id":self.task_id,
                 "execution_date": self.execution_date.timestamp() 
             }
-            print(upload_paylod)
             start_uplaod = requests.post(url=f"{self.base_url}flow", json=upload_paylod)
             flow_id = start_uplaod.json()
             
