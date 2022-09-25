@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from api.db.airflow import mongo
+from api.utils.utils import get_start_date
 
 
 class DataFlowDocument:
@@ -15,11 +16,13 @@ class DataFlowDocument:
         if pipe_id:
             pipe = self.get_pipeline(pipe_id)
             return {"name": pipe["name"], "id": pipe["pipeline_id"], "created_on": pipe["created_on"],
-                    "description": pipe["description"], "modified_on": pipe.get("modified_on")}
+                    "description": pipe["description"], "modified_on": pipe.get("modified_on"), "start_date": pipe.get("start_date"),
+                    "scheduler": pipe.get("scheduler")}
 
         pipes = dataflow.find()
         return [{"name": pipe["name"], "id": pipe["pipeline_id"], "created_on": pipe["created_on"],
-                 "description": pipe["description"], "modified_on": pipe.get("modified_on")} for pipe in pipes]
+                 "description": pipe["description"], "modified_on": pipe.get("modified_on"), "start_date": pipe.get("start_date"),
+                 "scheduler": pipe.get("scheduler")} for pipe in pipes]
 
     def get_pipeline(self, pipe_id):
         """Fetches a pipeline document based on pipe_id"""
@@ -36,16 +39,18 @@ class DataFlowDocument:
         exist_pipeline = self.get_pipeline(template["pipeline_id"])
         if exist_pipeline:
             dataflow.update_one(
-                    {'pipeline_id': template["pipeline_id"]},
-                    {'$set': {
-                        "nodes": template["nodes"],
-                        "links": template["links"],
-                        "name": template["name"],
-                        "description": template["description"],
-                        "modified_on": datetime.now()
-                    }
-                    }, upsert=False
-                )
+                {'pipeline_id': template["pipeline_id"]},
+                {'$set': {
+                    "nodes": template["nodes"],
+                    "links": template["links"],
+                    "name": template["name"],
+                    "description": template["description"],
+                    "modified_on": datetime.now(),
+                    "scheduler": template["scheduler"],
+                    "start_date": get_start_date(template.get("start_date")),
+                }
+                }, upsert=False
+            )
 
         else:
             template["created_on"] = datetime.now()

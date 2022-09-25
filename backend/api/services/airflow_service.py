@@ -8,6 +8,7 @@ from api.models.dag_model import DagModel
 from api.models.dag_run import DagRun
 from api.models.task_instance import TaskInstance
 from api.services.pipeline_service import get_pipeline
+from api.utils.utils import get_start_date
 
 
 def publish_to_airflow(pipe_id):
@@ -16,9 +17,12 @@ def publish_to_airflow(pipe_id):
     dag_definition = dict(
         id=pipeline['pipeline_id'],
         nodes=pipeline['nodes'],
-        links=pipeline['links']
+        links=pipeline['links'],
+        schedule_interval=pipeline.get("scheduler", None),
+        start_date=get_start_date(pipeline.get("start_date"))
     )
-    response = requests.post(url=f"{airflow_uri}dags/", json=dag_definition, headers={'Content-type': 'application/json', 'Accept': 'text/plain'})
+    response = requests.post(url=f"{airflow_uri}dags/", json=dag_definition, headers={
+                             'Content-type': 'application/json', 'Accept': 'text/plain'})
 
     if response.status_code == 200:
         return {"status": "success", "message": "Dag Created From Pipeline"}
@@ -55,12 +59,13 @@ def pulsate_run(run_id):
     un_pause_dag(run.dag_id)
 
 
-def retry_failed_run(run_id, tasks=None, states=["failed","upstream_failed"]):
+def retry_failed_run(run_id, tasks=None, states=["failed", "upstream_failed"]):
     session = db.session
     run = session.query(DagRun).filter_by(run_id=run_id).first()
-    tasks = session.query(TaskInstance).filter(TaskInstance.state.in_(states)).filter_by(dag_id=run.dag_id, execution_date=run.execution_date).all()
+    tasks = session.query(TaskInstance).filter(TaskInstance.state.in_(
+        states)).filter_by(dag_id=run.dag_id, execution_date=run.execution_date).all()
     for t in tasks:
         t.state = None
-    run.state='running'
+    run.state = 'running'
     # SHOULD UNPAUSE DAG
     session.commit()

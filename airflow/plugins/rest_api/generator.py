@@ -15,7 +15,7 @@ from airflow.api.common.experimental.trigger_dag import trigger_dag
 from airflow.utils import timezone
 from dcm.utils.dag import unpause_dag, pause_dag, stop_all_dags_runs
 
-import json 
+import datetime
 
 # from airflow.utils.types import DagRunType
 import uuid
@@ -23,7 +23,7 @@ import uuid
 imports_string = """
 import codecs
 import logging
-from datetime import timedelta
+from datetime import timedelta, datetime
 from airflow import DAG
 from airflow.utils import dates
 from airflow.operators.python_operator import PythonOperator
@@ -38,11 +38,12 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
         """
 
+
 def camelCase(st):
     output = ''.join(x for x in st.title() if x.isalnum())
     return output[0].lower() + output[1:]
 
-    
+
 def generate_id():
     return uuid.uuid4().hex.upper()
 
@@ -64,20 +65,24 @@ class Dags(BaseView):
         print(request.json)
 
         dag_id = paylaod['id']
-        schedule_interval = None
+
+        schedule_interval = paylaod.get("schedule_interval", None)
+        start_date = paylaod.get('start_date', (datetime.datetime.now(
+        ) - datetime.timedelta(days=2)).strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
+
         default_args = {}
 
         tasks = paylaod['nodes']
         dependincies = paylaod['links']
 
         dag_definition = (
-        f"dag = DAG("
+            f"dag = DAG("
             f"dag_id='{dag_id}',"
             f"default_args={default_args},"
             f"schedule_interval={schedule_interval},"
-            f"start_date=days_ago(2),"
+            f"start_date=datetime.strptime('{start_date}', '%Y-%m-%dT%H:%M:%S.%fz'),"
             f"is_paused_upon_creation=False,"
-        f")"
+            f")"
         )
 
         with open(f"/opt/airflow/dags/{dag_id}.py", "a") as dag_file:
@@ -107,7 +112,8 @@ class Dags(BaseView):
                     f"'task_parameters':{repr(task)},"
                     f"'task_type':'{task_type}',"
                     f"'task_label':'{task_label}',"
-                    f"'dag_metadata':"+"{"+f"'tasks':{repr(tasks_meta)}, 'dependincies': {repr(dependincies)} "+"}"+f","
+                    f"'dag_metadata':" +
+                    "{"+f"'tasks':{repr(tasks_meta)}, 'dependincies': {repr(dependincies)} "+"}"+f","
                 ) + "}"
 
                 task_definition = (
@@ -139,7 +145,7 @@ class Dags(BaseView):
             "dag_id": dag_id
         }
 
-    # Trigger Dag Maunally By API 
+    # Trigger Dag Maunally By API
     @csrf.exempt
     @expose('/trigger', methods=['POST'])
     def trigger_post(self):
@@ -148,7 +154,6 @@ class Dags(BaseView):
         conf = payload['conf'] or {}
         preview = conf.get('preview', False)
         execution_date = timezone.utcnow()
-
 
         stop_all_dags_runs(trigger_dag_id)
         if preview:
@@ -170,8 +175,6 @@ class Dags(BaseView):
             'run_id': run_id,
             'execution_date': str(execution_date)
         }
-        
 
 
 generator = Dags(category="Generator", name="Dag Generator API")
-
